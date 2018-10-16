@@ -1,5 +1,5 @@
 const appName = 'restaurant-app';
-const version = appName + '-v2';
+const version = appName + '-v3';
 const imgVersion = appName + '-images';
 const allCaches = [version, imgVersion]
 const toCache = [
@@ -8,11 +8,9 @@ const toCache = [
     '/css/styles.css',
     '/css/styles-medium.css',
     '/css/styles-large.css',
-    '/js/dbhelper.js',
     '/js/main.js',
     '/js/restaurant_info.js',
-    '/js/register-sw.js',
-    '/data/restaurants.json'
+    'manifest.json',
 ];
 
 self.addEventListener('install', function(event){
