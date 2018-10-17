@@ -62,6 +62,21 @@ export default class DBHelper {
     });
   }
 
+  static fetchReviewsByRestaurant(id, callback){
+    fetch(`${DBHelper.API_URL}/reviews/?restaurant_id=${id}`).then(response => {
+      if (!response.ok) return Promise.reject("Restaurant Reviews couldn't be fetched from network");
+      return response.json();
+    }).then((reviews)=> {
+      dbPromise.putReviews(id, reviews);
+      return callback(null, reviews);
+    }).catch((error) => {
+      console.log(error);
+      dbPromise.getReviews(id).then((reviews)=>{
+        return callback(null, reviews);
+      });
+    });
+  }
+
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
    */
@@ -202,4 +217,17 @@ export default class DBHelper {
     return marker;
   } */
 
+  static submitReviewByRestaurant(review) {
+    fetch(`${DBHelper.API_URL}/reviews`, {
+      method:'post',
+      body: JSON.stringify({
+        "restaurant_id": review.restaurant_id,
+        "name": review.name,
+        "rating": review.rating,
+        "comments": review.comments
+    })
+    }).then((response) => {
+      return response;
+    })
+  }
 }

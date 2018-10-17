@@ -1,10 +1,9 @@
 const appName = 'restaurant-app';
-const version = appName + '-v3';
+const version = appName + '-v6';
 const imgVersion = appName + '-images';
 const allCaches = [version, imgVersion]
 const toCache = [
     '/', 
-    '/restaurant.html',
     '/css/styles.css',
     '/css/styles-medium.css',
     '/css/styles-large.css',
