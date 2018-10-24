@@ -9,7 +9,7 @@ const dbPromise = {
         }
     }),
     putRestaurants(restaurants) {
-        if (!restaurants.push){ restaurants = [restaurants]};
+        //if (!restaurants.push){ restaurants = [restaurants]};
         return this.db.then(db => {
         const store = db.transaction('restaurants', 'readwrite').objectStore('restaurants');
         Promise.all(restaurants.map(networkRestaurant => {

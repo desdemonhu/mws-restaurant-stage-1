@@ -60,10 +60,10 @@ const initMap = () => {
  * Get current restaurant from page URL.
  */
 const fetchRestaurantFromURL = (callback) => {
-  if (self.restaurant) { // restaurant already fetched!
-    callback(null, self.restaurant)
-    return;
-  }
+  // if (self.restaurant) { // restaurant already fetched!
+  //   callback(null, self.restaurant)
+  //   return;
+  // }
   const id = getParameterByName('id');
   if (!id) { // no id found in URL
     error = 'No restaurant id in URL'

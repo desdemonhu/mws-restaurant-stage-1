@@ -55,7 +55,7 @@ export default class DBHelper {
       dbPromise.putRestaurants(restaurant)
       return callback(null, restaurant);
     }).catch((error) => {
-      console.log(error);
+      console.log(id, error);
       dbPromise.getRestaurants(id).then((restaurant)=>{
         return callback(null, restaurant);
       });
