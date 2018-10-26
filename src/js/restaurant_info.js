@@ -4,12 +4,14 @@ import './register-sw';
 
 let restaurant;
 var newMap;
+const worker = new Worker('js/worker.js');
 
 /**
  * Initialize map as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {  
   initMap();
+  self.addEventListener('submit', submitReview);
 });
 
 /**
@@ -34,7 +36,7 @@ const initMap = () => {
         id: 'mapbox.streets'    
       }).addTo(newMap);
       fillBreadcrumb();
-      DBHelper.mapMarkerForRestaurant(self.restaurant, newMap);
+      DBHelper.mapMarkerForRestaurant(restaurant, newMap);
     }
   });
 }  
@@ -71,12 +73,18 @@ const fetchRestaurantFromURL = (callback) => {
     DBHelper.fetchRestaurantById(id, (error, restaurant) => {
       self.restaurant = restaurant;
       if (!restaurant) {
-        console.error(error);
+        console.error('Unable to fetch restaurant: ', error);
         return;
       }
-      fillRestaurantHTML();
-      callback(null, restaurant)
-    });
+      DBHelper.fetchReviewsByRestaurant(id, (error, reviews) => {
+        self.restaurant.reviews = reviews;
+        if(!reviews) {
+          console.error('Reviews: ', error);
+          return;
+        }
+        fillRestaurantHTML();
+        callback(null, restaurant);});
+    }); 
   }
 }
 
@@ -144,6 +152,7 @@ const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     return;
   }
   const ul = document.getElementById('reviews-list');
+  
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });
@@ -160,7 +169,7 @@ const createReviewHTML = (review) => {
   li.appendChild(name);
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  date.innerHTML = new Date(review.updatedAt);
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -198,4 +207,27 @@ const getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+////Submit Review
+const submitReview = (event) => {
+  event.preventDefault();
+  let review = {};
+  let reviewsList = document.getElementById('reviews-list');
+
+  review['name'] = event.target[0].value;
+  review['rating'] = event.target[1].value;
+  review['comments'] = event.target[2].value;
+  review['restaurant_id'] = getParameterByName('id');
+  review['updatedAt'] = new Date();
+
+  reviewsList.append(createReviewHTML(review));
+
+  if(window.Worker){
+    worker.postMessage(review);
+    console.log('Review posted to worker');
+    worker.onmessage = function(event){
+      console.log('Message recieved from worker: ', event.data);
+    }
+  } 
 }

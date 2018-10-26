@@ -1,5 +1,6 @@
+import DBHelper from './js/dbhelper';
 const appName = 'restaurant-app';
-const version = appName + '-v11';
+const version = appName + '-v10';
 const imgVersion = appName + '-images';
 const allCaches = [version, imgVersion]
 const toCache = [
@@ -59,34 +60,11 @@ self.addEventListener('fetch', function(event){
     )
 })
 
-// self.addEventListener('fetch', (event)=> {
-//     event.respondWith(
-//         caches.open(version).then((cache)=> {
-//            return cache.match(event.request).then(function(response){
-//                 return response || fetch(event.request).then((res) =>{
-//                     return cache.put(event.request, res.clone());
-//                 })
-                
-//             })
-//         })
-//     )
-// })
-
-
-// self.addEventListener('fetch', function(event){
-//     event.respondWith(
-//         caches.open(version).then((cache)=> {
-//             return cache.match(event.request).then(function(res){
-//                 return res || fetch(event.request).then(function(response){
-//                     return caches.open(version, 'readwrite').then(function(cache){
-//                         cache.put(event.request, response.clone());
-//                         return response;
-//                     })
-//                 })
-//             })
-//         })
-//     )
-// })
+self.addEventListener('sync', function (event) {
+    if (event.tag == 'todo_updated') {
+      event.waitUntil(serverSync(event));
+    }
+  });
 
 function serveImage(request) {
     let imageStorageUrl = request.url;
@@ -100,4 +78,8 @@ function serveImage(request) {
         });
       });
     });
+  }
+
+  function serverSync(event) {
+      DBHelper.updateDatabase();  
   }

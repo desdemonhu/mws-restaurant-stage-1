@@ -23,6 +23,19 @@ const dbPromise = {
         });
         });
     },
+    putReviews(id, reviews){
+        if(id){
+            return this.db.then(db => {
+                const store = db.transaction('restaurants', 'readwrite').objectStore('restaurants')
+                return store.get(Number(id)).then((restaurant) => {
+                    restaurant.reviews = reviews;
+                    return store.put(restaurant);
+                }).then(function() {
+                    return store.complete;
+                })
+            })
+        }
+    },
     getRestaurants(id = undefined) {
         return this.db.then(db => {
           const store = db.transaction('restaurants').objectStore('restaurants');
@@ -30,6 +43,15 @@ const dbPromise = {
           return store.getAll();
         });
       },
+    getReviews(id = undefined){
+        return this.db.then((db) => {
+            const store = db.transaction('restaurants').objectStore('restaurants');
+            if(id) return store.get(Number(id)).then(restaurant => {
+                return restaurant.reviews
+            })
+            return null;
+        })
+    },
 };
 
 export default dbPromise;
