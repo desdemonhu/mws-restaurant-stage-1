@@ -54,25 +54,26 @@
       </section>
     </section>
     <!-- end restaurant -->
-    <section>
-        <form name="review-submission" action="submit" method="POST" id="review-submission">
-            <h2>Submit a review</h2>
-            <label for="name">Name: </label><input type="text" name="name" id="name" required>
-            <label for="rating">Rating: </label>
-            <select id="rating">
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
-            </select>
-            <label for="review" id="review">Review: </label>
-            <textarea id="review" name="review" rows="4" cols="33" maxlength="500" wrap="hard"></textarea>
-            <button type="submit">Submit Review</button>
-        </form>
-      </section>
+    
     <!-- Beginning reviews -->
     <section id="reviews-container" role="contentinfo" aria-label="Reviews">
+        <section>
+            <form name="review-submission" action="submit" method="POST" id="review-submission">
+                <h2>Submit a review</h2>
+                <label for="name">Name: </label><input type="text" name="name" id="name" required>
+                <label for="rating">Rating: </label>
+                <select id="rating">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+                <label for="review" id="review">Review: </label>
+                <textarea id="review" name="review" rows="4" cols="33" maxlength="500" wrap="hard"></textarea>
+                <button type="submit">Submit Review</button>
+            </form>
+          </section>
       <ul id="reviews-list"></ul>
     </section>
   </section>

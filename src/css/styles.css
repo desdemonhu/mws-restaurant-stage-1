@@ -322,6 +322,9 @@ nav h1 a {
   margin: 1%;
   font-size: 1.2em;
 }
+#review-submission input:focus{
+  border: 2pt solid #f18200;
+}
 #review-submission label {
   font-weight: bold;
   font-size: 1.5em;
@@ -342,4 +345,7 @@ nav h1 a {
 #review {
   display: block;
   width: 80%;
+}
+#review:focus{
+  border: 2px solid #f18200;
 }
