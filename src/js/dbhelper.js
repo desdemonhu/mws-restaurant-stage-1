@@ -218,6 +218,7 @@ export default class DBHelper {
   } */
 
   static submitReviewByRestaurant(review) {
+  if(navigator.onLine) {
     fetch(`${DBHelper.API_URL}/reviews`, {
       method:'post',
       body: JSON.stringify({
@@ -229,5 +230,26 @@ export default class DBHelper {
     }).then((response) => {
       return response;
     })
+  } else {
+      dbPromise.getReviews(review.restaurant_id).then((reviews)=>{
+        let allReviews = reviews.concat(review);
+        dbPromise.putReviews(review.restaurant_id, allReviews);
+      })
+    }  
   }
+
+  static updateDatabase(){
+    dbPromise.getRestaurants().then((restaurants)=> {
+      restaurants.forEach(restaurant => {
+        if(restaurant.reviews){
+          restaurant.reviews.forEach((review) => {
+            if(!review.id){
+              this.submitReviewByRestaurant(review);
+            }
+          })
+        }
+      });
+    })
+  }
+
 }

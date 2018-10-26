@@ -309,4 +309,37 @@ nav h1 a {
 /* =================== Review Submission Form ======== */
 #review-submission{
   position: relative;
+  margin: 1%;
+  padding-left: 2%;
+  background-color: white;
+  border:2px solid #333;
+}
+#review-submission h2 {
+  color: #f18200;
+}
+#review-submission input {
+  display: inline-block;
+  margin: 1%;
+  font-size: 1.2em;
+}
+#review-submission label {
+  font-weight: bold;
+  font-size: 1.5em;
+}
+#review-submission button{
+  background-color: #f18200;
+  color: whitesmoke;
+  padding: 20px;
+  margin: 1%;
+  border: none;
+}
+#review-submission option, #rating {
+  font-size: 1.5em;
+}
+#review-submission button:focus,#review-submission button:hover {
+  background-color: #0275d8;
+}
+#review {
+  display: block;
+  width: 80%;
 }

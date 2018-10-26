@@ -7,3 +7,5 @@ if (navigator.serviceWorker) {
   console.log('ServiceWorker registration failed: ', err);
 });  
 }
+
+navigator.serviceWorker.ready.then(swRegistration => swRegistration.sync.register('todo_updated'));

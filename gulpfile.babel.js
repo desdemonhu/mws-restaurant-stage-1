@@ -13,6 +13,7 @@ import buffer from 'vinyl-buffer';
 import log from 'fancy-log';
 import mergeStream from 'merge-stream';
 import c from 'ansi-colors';
+import { worker } from 'cluster';
 
 const browserSync = require('browser-sync').create();
 
@@ -24,7 +25,7 @@ const paths = {
     js: {
       src: 'src/**/*.js',
       dest: 'dist/',
-      bundles: ['js/main.js', 'js/restaurant_info.js','sw.js']
+      bundles: ['js/main.js', 'js/restaurant_info.js','sw.js', 'js/worker.js']
     }
   };
 
@@ -160,7 +161,7 @@ function createBundle(src) {
       })
       .pipe(source(outputFile))
       .pipe(buffer())
-      .pipe(uglify())
+      //.pipe(uglify())
       .pipe(gulp.dest(paths.js.dest + outputDir))
       .pipe(browserSync.stream()); // call browserSync.stream() to refresh browser when using sync task
   }

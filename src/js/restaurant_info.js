@@ -4,6 +4,7 @@ import './register-sw';
 
 let restaurant;
 var newMap;
+const worker = new Worker('js/worker.js');
 
 /**
  * Initialize map as soon as the page is loaded.
@@ -220,7 +221,13 @@ const submitReview = (event) => {
   review['restaurant_id'] = getParameterByName('id');
   review['updatedAt'] = new Date();
 
-  DBHelper.submitReviewByRestaurant(review); 
   reviewsList.append(createReviewHTML(review));
 
+  if(window.Worker){
+    worker.postMessage(review);
+    console.log('Review posted to worker');
+    worker.onmessage = function(event){
+      console.log('Message recieved from worker: ', event.data);
+    }
+  } 
 }
