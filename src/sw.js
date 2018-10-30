@@ -1,11 +1,11 @@
 import DBHelper from './js/dbhelper';
 const appName = 'restaurant-app';
-const version = appName + '-v10';
+const version = appName + '-v11';
 const imgVersion = appName + '-images';
 const allCaches = [version, imgVersion]
 const toCache = [
     '/',
-    'index.html', 
+    '/index.html', 
     '/restaurant.html',
     '/css/styles.css',
     '/css/styles-medium.css',

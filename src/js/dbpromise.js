@@ -38,14 +38,14 @@ const dbPromise = {
     },
     getRestaurants(id = undefined) {
         return this.db.then(db => {
-          const store = db.transaction('restaurants').objectStore('restaurants');
+          const store = db.transaction('restaurants', 'readonly').objectStore('restaurants');
           if (id) return store.get(Number(id));
           return store.getAll();
         });
       },
     getReviews(id = undefined){
         return this.db.then((db) => {
-            const store = db.transaction('restaurants').objectStore('restaurants');
+            const store = db.transaction('restaurants', 'readonly').objectStore('restaurants');
             if(id) return store.get(Number(id)).then(restaurant => {
                 return restaurant.reviews
             })

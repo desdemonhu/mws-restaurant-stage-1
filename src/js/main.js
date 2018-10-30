@@ -78,23 +78,27 @@ const fillCuisinesHTML = (cuisines = self.cuisines) => {
 const initMap = () => {
   if (!SECRET.mapbox_key){
     console.log('Please see secret-example.js for instructions on how to add your mapbox key');
-  } else {
-    newMap = L.map('map', {
-      center: [40.722216, -73.987501],
-      zoom: 12,
-      scrollWheelZoom: false
-    });
-L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
-  mapboxToken: SECRET.mapbox_key,
-  maxZoom: 18,
-  attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-    '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-    'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-  id: 'mapbox.streets'
-}).addTo(newMap);
-
-updateRestaurants();
+  } else if (navigator.onLine) {
+    try {
+      newMap = L.map('map', {
+        center: [40.722216, -73.987501],
+        zoom: 12,
+        scrollWheelZoom: false
+      });
+  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
+    mapboxToken: SECRET.mapbox_key,
+    maxZoom: 18,
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+      '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+      'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    id: 'mapbox.streets'
+  }).addTo(newMap);
+    }
+    catch (error) {
+      console.log('Offline mode: ', error);
+    }
   } 
+  updateRestaurants();
 }
 
 /**
@@ -112,7 +116,7 @@ const updateRestaurants = () => {
 
   DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, (error, restaurants) => {
     if (error) { // Got an error!
-      console.error(error);
+      console.error('Trouble fetching restaurants by cuisine and neighborhood: ', error);
     } else {
       resetRestaurants(restaurants);
       fillRestaurantsHTML();
@@ -186,6 +190,7 @@ const createRestaurantHTML = (restaurant) => {
  * Add markers for current restaurants to the map.
  */
 const addMarkersToMap = (restaurants = self.restaurants) => {
+  if (!newMap || !L) return;
   restaurants.forEach(restaurant => {
     // Add marker to the map
     const marker = DBHelper.mapMarkerForRestaurant(restaurant, newMap);

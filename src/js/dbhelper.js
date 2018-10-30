@@ -21,26 +21,46 @@ export default class DBHelper {
   /**
    * Fetch all restaurants.
    */
-  static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', `${DBHelper.API_URL}/restaurants`);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const restaurants = JSON.parse(xhr.responseText);
-        dbPromise.putRestaurants(restaurants);
-        callback(null, restaurants);
-      } else {
-         dbPromise.getRestaurants().then(restaurants =>{
-          if(restaurants.length > 0){
+  // static fetchRestaurants(callback) {
+  //   let xhr = new XMLHttpRequest();
+  //   xhr.open('GET', `${DBHelper.API_URL}/restaurants`);
+  //   xhr.onload = () => {
+  //     if (xhr.status === 200) { // Got a success response from server!
+  //       const restaurants = JSON.parse(xhr.responseText);
+  //       dbPromise.putRestaurants(restaurants);
+  //       callback(null, restaurants);
+  //     } else {
+  //        dbPromise.getRestaurants().then(restaurants =>{
+  //         if(restaurants.length > 0){
+  //           callback(null, restaurants);
+  //         } else {
+  //           const error = (`Request failed. Returned status of ${xhr.status}`);
+  //           callback(error, null);
+  //         }
+  //       }); 
+  //     }
+  //   };
+  //   xhr.send();
+  // }
+  static fetchRestaurants(callback){
+    fetch(`${DBHelper.API_URL}/restaurants`).then((response)=> {
+      if(!response.ok) {
+        dbPromise.getRestaurants().then((restaurants)=>{
+          if(restaurants > 0){
             callback(null, restaurants);
           } else {
-            const error = (`Request failed. Returned status of ${xhr.status}`);
+            const error = 'Unable to get restaurants from IndexDB'
             callback(error, null);
           }
-        }); 
+        })
+      } else {
+        const r = response.json();
+        r.then((restaurants) => {
+          dbPromise.putRestaurants(restaurants);
+          callback(null, restaurants);
+        })
       }
-    };
-    xhr.send();
+    })
   }
 
   /**
