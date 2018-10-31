@@ -213,12 +213,13 @@ const submitReview = (event) => {
   review['updatedAt'] = new Date();
 
   reviewsList.append(createReviewHTML(review));
+  DBHelper.submitReviewByRestaurant(review);
 
-  if(window.Worker){
-    worker.postMessage(review);
-    console.log('Review posted to worker');
-    worker.onmessage = function(event){
-      console.log('Message recieved from worker: ', event.data);
-    }
-  } 
+  // if(window.Worker){
+  //   worker.postMessage(review);
+  //   console.log('Review posted to worker');
+  //   worker.onmessage = function(event){
+  //     console.log('Message recieved from worker: ', event.data);
+  //   }
+  // } 
 }

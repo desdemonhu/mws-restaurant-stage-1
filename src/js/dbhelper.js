@@ -44,22 +44,20 @@ export default class DBHelper {
   // }
   static fetchRestaurants(callback){
     fetch(`${DBHelper.API_URL}/restaurants`).then((response)=> {
-      if(!response.ok) {
-        dbPromise.getRestaurants().then((restaurants)=>{
-          if(restaurants > 0){
-            callback(null, restaurants);
-          } else {
-            const error = 'Unable to get restaurants from IndexDB'
-            callback(error, null);
-          }
-        })
-      } else {
         const r = response.json();
         r.then((restaurants) => {
           dbPromise.putRestaurants(restaurants);
           callback(null, restaurants);
         })
-      }
+    }).catch((error) => {
+      dbPromise.getRestaurants().then((restaurants)=>{
+        if(restaurants.length > 0){
+          callback(null, restaurants);
+        } else {
+          const errorMessage = 'Unable to get restaurants from IndexDB: '
+          callback(errorMessage, error, null);
+        }
+      })
     })
   }
 
@@ -87,13 +85,19 @@ export default class DBHelper {
       if (!response.ok) return Promise.reject("Restaurant Reviews couldn't be fetched from network");
       return response.json();
     }).then((reviews)=> {
-      dbPromise.putReviews(id, reviews);
-      return callback(null, reviews);
+      dbPromise.getReviews(id).then((dbReviews)=>{
+        if(reviews.length >= dbReviews.length){
+          dbPromise.putReviews(id, reviews).then(() =>{
+            return callback(null, reviews);
+          })
+        }else {
+          dbPromise.getReviews(id).then((reviews)=>{
+            return callback(null, reviews);
+          });
+        }
+      })
     }).catch((error) => {
       console.log(error);
-      dbPromise.getReviews(id).then((reviews)=>{
-        return callback(null, reviews);
-      });
     });
   }
 
@@ -238,9 +242,8 @@ export default class DBHelper {
   } */
 
   static submitReviewByRestaurant(review) {
-  if(navigator.onLine) {
     fetch(`${DBHelper.API_URL}/reviews`, {
-      method:'post',
+      method:'POST',
       body: JSON.stringify({
         "restaurant_id": review.restaurant_id,
         "name": review.name,
@@ -249,13 +252,14 @@ export default class DBHelper {
     })
     }).then((response) => {
       return response;
-    })
-  } else {
+    }).catch((error) => {
       dbPromise.getReviews(review.restaurant_id).then((reviews)=>{
         let allReviews = reviews.concat(review);
+        console.log(allReviews);
+        
         dbPromise.putReviews(review.restaurant_id, allReviews);
       })
-    }  
+    }) 
   }
 
   static updateDatabase(){
@@ -264,6 +268,8 @@ export default class DBHelper {
         if(restaurant.reviews){
           restaurant.reviews.forEach((review) => {
             if(!review.id){
+              console.log('in updateDatabase: ',review);
+              
               this.submitReviewByRestaurant(review);
             }
           })
