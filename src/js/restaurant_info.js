@@ -83,8 +83,15 @@ const fetchRestaurantFromURL = (callback) => {
  * Create restaurant HTML and add it to the webpage
  */
 const fillRestaurantHTML = (restaurant = self.restaurant) => {
+  //const favorite = document.getElementById('is-favorite');
+  let favoriteIcon = '';
+  if(restaurant.favorite === true){
+    favoriteIcon = '&#9733;';
+    document.getElementById('favorite').checked = true;
+  }
+
   const name = document.getElementById('restaurant-name');
-  name.innerHTML = restaurant.name;
+  name.innerHTML = `${favoriteIcon} ${restaurant.name}`;
 
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
@@ -132,7 +139,7 @@ const fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hour
  */
 const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
-  const title = document.createElement('h2');
+  const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
   container.appendChild(title);
 
@@ -214,12 +221,12 @@ const submitReview = (event) => {
 
   reviewsList.append(createReviewHTML(review));
   DBHelper.submitReviewByRestaurant(review);
-
-  // if(window.Worker){
-  //   worker.postMessage(review);
-  //   console.log('Review posted to worker');
-  //   worker.onmessage = function(event){
-  //     console.log('Message recieved from worker: ', event.data);
-  //   }
-  // } 
 }
+
+const markFavorite = (event) => {
+  const id = getParameterByName('id');
+  let value = document.getElementById('favorite').checked;
+  DBHelper.submitFavorite(id, value);
+}
+
+document.getElementById('favorite').addEventListener('click', markFavorite);

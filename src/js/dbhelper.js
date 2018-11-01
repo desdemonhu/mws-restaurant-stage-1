@@ -86,7 +86,7 @@ export default class DBHelper {
       return response.json();
     }).then((reviews)=> {
       dbPromise.getReviews(id).then((dbReviews)=>{
-        if(reviews.length >= dbReviews.length){
+        if(!dbReviews || reviews.length >= dbReviews.length){
           dbPromise.putReviews(id, reviews).then(() =>{
             return callback(null, reviews);
           })
@@ -97,7 +97,14 @@ export default class DBHelper {
         }
       })
     }).catch((error) => {
-      console.log(error);
+      dbPromise.getReviews(id).then((reviews)=>{
+        if(reviews){
+          return callback(null, reviews);
+        }
+        else {
+          return callback(error, null);
+        }
+      });
     });
   }
 
@@ -275,6 +282,17 @@ export default class DBHelper {
           })
         }
       });
+    })
+  }
+
+  static submitFavorite(id, value){
+    fetch(`${DBHelper.API_URL}/restaurants/${id}`, {
+      method: 'POST',
+      body: JSON.stringify({
+        "favorite": value,
+    })
+    }).then((response) => {
+      return response;
     })
   }
 

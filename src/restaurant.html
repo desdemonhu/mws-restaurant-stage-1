@@ -47,10 +47,13 @@
       <section id="restaurant-background">
           <div id="jump-to-filter" ></div>
           <h2 id="restaurant-name"></h2>
-          <img id="restaurant-img">
+          <img id="restaurant-img" alt="restaurant picture">
           <p id="restaurant-cuisine"></p>
           <p id="restaurant-address"></p>
           <table id="restaurant-hours"></table>
+      </section>
+      <section id="Favorite" role="form" aria-label="Favorite">
+        <label for="favorite" id="favorite-label">Mark as favorite: <input type="checkbox" name="favorite" value=true id="favorite"></label>
       </section>
     </section>
     <!-- end restaurant -->
@@ -69,7 +72,7 @@
                   <option>4</option>
                   <option>5</option>
                 </select>
-                <label for="review" id="review">Review: </label>
+                <label for="review" id="review-title">Review: </label>
                 <textarea id="review" name="review" rows="4" cols="33" maxlength="500" wrap="hard"></textarea>
                 <button type="submit">Submit Review</button>
             </form>
@@ -78,10 +81,6 @@
     </section>
   </section>
     <!-- End reviews -->
-    <section>
-      <nav><a href="/#maincontent">Back to Top</a>
-      </nav>
-    </section>
   </main>
   <!-- End main -->
 

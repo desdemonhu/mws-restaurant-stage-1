@@ -201,4 +201,21 @@ const addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 
-} 
+}
+
+const implementObserver = () =>{
+  var options = {
+    root: document.querySelector('#restaurants-list'),
+    rootMargin: '0px',
+    threshold: 1.0
+  }
+  var target = document.querySelector('li');
+  var observer = new IntersectionObserver(fillRestaurantsHTML, options);
+  
+  observer.observe(target);
+}
+
+
+document.addEventListener('beforeprint', implementObserver);
+document.getElementById('neighborhoods-select').addEventListener('change', updateRestaurants);
+document.getElementById('cuisines-select').addEventListener('change', updateRestaurants);
