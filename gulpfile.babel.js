@@ -161,7 +161,7 @@ function createBundle(src) {
       })
       .pipe(source(outputFile))
       .pipe(buffer())
-      //.pipe(uglify())
+      .pipe(uglify())
       .pipe(gulp.dest(paths.js.dest + outputDir))
       .pipe(browserSync.stream()); // call browserSync.stream() to refresh browser when using sync task
   }
